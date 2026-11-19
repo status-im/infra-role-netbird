@@ -1,0 +1,24 @@
+---
+- name: Enable and start NetBird service
+  service:
+    name: 'netbird'
+    state: 'started'
+    enabled: true
+
+- name: Enroll NetBird routing peer
+  command:
+    argv:
+      - netbird
+      - up
+    creates: '{{ netbird_setup_complete_path }}'
+  environment:
+    NB_SETUP_KEY: '{{ netbird_setup_key | mandatory }}'
+  register: netbird_enrollment
+  no_log: true
+
+- name: Mark NetBird peer as enrolled
+  file:
+    path:  '{{ netbird_setup_complete_path }}'
+    state: 'touch'
+    mode:  '0600'
+  when: netbird_enrollment.changed

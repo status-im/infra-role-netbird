@@ -1,0 +1,25 @@
+---
+- name: Install APT certificate support
+  apt:
+    name: ca-certificates
+    state: present
+    update_cache: true
+
+- name: Install NetBird APT signing key
+  get_url:
+    url: '{{ netbird_apt_repo_key_url }}'
+    dest: '{{ netbird_apt_repo_keyring }}'
+    checksum: 'sha256:{{ netbird_apt_repo_key_sha256 }}'
+    mode: '0644'
+
+- name: Add NetBird APT repository
+  apt_repository:
+    repo: 'deb [signed-by={{ netbird_apt_repo_keyring }}] {{ netbird_apt_repo_url }} {{ netbird_apt_repo_suite }} {{ netbird_apt_repo_component }}'
+    filename: '{{ netbird_apt_repo_filename }}'
+    state: present
+    update_cache: true
+
+- name: Install NetBird
+  apt:
+    name: netbird
+    state: present

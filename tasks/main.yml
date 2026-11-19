@@ -1,0 +1,10 @@
+---
+- name: Require NetBird setup key
+  assert:
+    that:
+      - netbird_setup_key | length > 0
+    fail_msg: Set netbird_setup_key to a NetBird setup key.
+
+- import_tasks: install.yml
+- import_tasks: gateway.yml
+- import_tasks: service.yml

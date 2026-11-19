@@ -1,0 +1,12 @@
+---
+galaxy_info:
+  author: Jakub Sokołowski <jakub@status.im>
+  description: Install and configure a NetBird routing peer
+  company: Status.im
+  license: MIT
+  min_ansible_version: '2.10'
+  platforms:
+    - name: Ubuntu
+      versions:
+        - resolute
+  dependencies: []
