@@ -11,3 +11,10 @@ netbird_apt_repo_keyring: '/usr/share/keyrings/netbird-archive-keyring.asc'
 netbird_apt_repo_filename: 'netbird'
 
 netbird_setup_complete_path: '/var/lib/netbird/ansible-setup-complete'
+
+netbird_forwarding_enabled: false
+#netbird_forwarding_source_network: ~
+netbird_forwarding_in_interface: 'wt0'
+netbird_forwarding_out_interface: 'wg0'
+netbird_forwarding_networks: []
+netbird_forwarding_rule_path: '/etc/nft.conf.d/nat/postrouting/netbird.nft'

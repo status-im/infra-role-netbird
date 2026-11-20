@@ -1,0 +1,6 @@
+# Managed by Ansible role: infra-role-netbird
+iifname "{{ netbird_forwarding_in_interface }}" oifname "{{ netbird_forwarding_out_interface }}" ip saddr {{ netbird_forwarding_source_network }} ip daddr {
+{% for network in netbird_forwarding_networks %}
+    {{ network }}{% if not loop.last %},{% endif %}
+{% endfor %}
+} counter masquerade
