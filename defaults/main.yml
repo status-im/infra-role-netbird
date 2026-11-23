@@ -27,9 +27,24 @@ netbird_forwarding_out_interface: 'wg0'
 netbird_forwarding_networks: []
 netbird_forwarding_rule_path: '/etc/nft.conf.d/nat/postrouting/netbird.nft'
 
+# Reverse Proxy service
+netbird_proxy_enabled: false
+netbird_proxy_cont_name: 'netbird-reverse-proxy'
+netbird_proxy_cont_path: '/docker/{{ netbird_proxy_cont_name }}'
+#netbird_proxy_domain: 'infra.example.org'
+#netbird_proxy_token: ~
+#netbird_proxy_certs_path: ~
+netbird_proxy_log_level: 'info'
+netbird_proxy_private: true
+netbird_proxy_acme_certs_enabled: true
+netbird_proxy_http_port: 80
+netbird_proxy_https_port: 443
+netbird_proxy_image: 'netbirdio/reverse-proxy:latest'
+
 # Consul service definition settings
 netbird_consul_service_name: 'netbird'
 netbird_consul_metrics_service_name: '{{ netbird_consul_service_name }}-metrics'
+netbird_consul_proxy_service_name: '{{ netbird_consul_service_name }}-proxy'
 netbird_consul_service_file_name: '{{ netbird_service_name | replace("-", "_") }}'
 netbird_consul_check_disabled: false
 netbird_consul_check_interval: '60s'
@@ -37,3 +52,8 @@ netbird_consul_check_timeout: '5s'
 netbird_consul_success_before_passing: 0
 netbird_consul_failures_before_warning: 1
 netbird_consul_failures_before_critical: 2
+
+# general container management
+compose_recreate: 'auto'
+compose_state: 'present'
+compose_pull: 'always'

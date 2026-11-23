@@ -20,10 +20,19 @@
             script: >-
               /bin/systemctl is-active {{ netbird_service_name }}
 
-      - id:   '{{ netbird_service_name }}'
+      - id:   '{{ netbird_consul_metrics_service_name }}'
         name: '{{ netbird_consul_metrics_service_name }}'
         tags: ['{{ env }}.{{ stage }}', 'netbird', 'vpn']
         checks:
           - id:   '{{ netbird_consul_metrics_service_name }}-health'
             type: 'http'
             http: 'http://localhost:{{ netbird_metrics_port }}/metrics'
+
+      - id:   '{{ netbird_consul_proxy_service_name }}'
+        name: '{{ netbird_consul_proxy_service_name }}'
+        tags: ['{{ env }}.{{ stage }}', 'netbird', 'vpn', 'proxy']
+        disabled: '{{ not netbird_proxy_enabled }}'
+        checks:
+          - id:   '{{ netbird_consul_metrics_service_name }}-health'
+            type: 'tcp'
+            tcp: 'localhost:{{ netbird_proxy_https_port }}'

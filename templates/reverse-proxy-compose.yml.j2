@@ -1,0 +1,27 @@
+services:
+  reverse-proxy:
+    container_name: '{{ netbird_proxy_cont_name }}'
+    image: '{{ netbird_proxy_image }}'
+    restart: 'unless-stopped'
+    labels:
+      # auto-updating of docker image
+      com.centurylinklabs.watchtower.enable: 'true'
+    ports:
+{% if netbird_proxy_acme_certs_enabled %}
+      - '0.0.0.0:{{ netbird_proxy_http_port }}:{{ netbird_proxy_http_port }}/tcp'
+{% endif %}
+      - '0.0.0.0:{{ netbird_proxy_https_port }}:{{ netbird_proxy_https_port }}/tcp'
+    environment:
+      NB_PROXY_MANAGEMENT_ADDRESS: 'https://api.netbird.io:443'
+      NB_PROXY_CERTIFICATE_DIRECTORY: '/certs'
+      NB_PROXY_ALLOW_INSECURE:    'false'
+      NB_PROXY_ACME_CERTIFICATES: '{{ netbird_proxy_acme_certs_enabled | to_json }}'
+      NB_PROXY_DOMAIN:            '{{ netbird_proxy_domain | mandatory }}'
+      NB_PROXY_LOG_LEVEL:         '{{ netbird_proxy_log_level }}'
+      NB_PROXY_TOKEN:             '{{ netbird_proxy_token | mandatory }}'
+      NB_PROXY_PRIVATE:           '{{ netbird_proxy_private | to_json }}'
+      NB_PROXY_ADDRESS:           '0.0.0.0:{{ netbird_proxy_https_port }}'
+{% if netbird_proxy_certs_path is defined %}
+    volumes:
+      - '{{ netbird_proxy_certs_path }}:/certs'
+{% endif %}

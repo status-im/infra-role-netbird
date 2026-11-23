@@ -1,0 +1,23 @@
+---
+- name: 'Create reverse proxy directory'
+  file:
+    dest:  '{{ netbird_proxy_cont_path }}'
+    state: 'directory'
+    owner: 'dockremap'
+    group: 'docker'
+    mode:  '0o775'
+
+- name: 'Create reverse proxy compose'
+  template:
+    src:   'reverse-proxy-compose.yml.j2'
+    dest:  '{{ netbird_proxy_cont_path }}/docker-compose.yml'
+    owner: 'dockremap'
+    group: 'docker'
+    mode:  '0o664'
+
+- name: 'Create reverse proxy container'
+  community.docker.docker_compose_v2:
+    project_src: '{{ netbird_proxy_cont_path }}'
+    recreate:    '{{ compose_recreate }}'
+    pull:        '{{ compose_pull }}'
+    state:       '{{ compose_state }}'
