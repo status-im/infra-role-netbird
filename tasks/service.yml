@@ -1,24 +1,29 @@
 ---
 - name: Enable and start NetBird service
   service:
-    name: 'netbird'
+    name:  '{{ netbird_service_name }}'
     state: 'started'
     enabled: true
 
+- name: Check if Netbird is configured
+  register: netbird_status_raw
+  ignore_errors: true
+  command: |
+    netbird status --check startup
+
 - name: Enroll NetBird routing peer
-  command:
-    argv:
-      - netbird
-      - up
-    creates: '{{ netbird_setup_complete_path }}'
+  when: netbird_status_raw.failed
+  no_log: true
   environment:
     NB_SETUP_KEY: '{{ netbird_setup_key | mandatory }}'
-  register: netbird_enrollment
-  no_log: true
-
-- name: Mark NetBird peer as enrolled
-  file:
-    path:  '{{ netbird_setup_complete_path }}'
-    state: 'touch'
-    mode:  '0600'
-  when: netbird_enrollment.changed
+  command: |
+    netbird up \
+    {% if netbird_metrics_enabled %}
+      --enable-local-metrics \
+      --local-metrics-address={{ netbird_metrics_host }}:{{ netbird_metrics_port }} \
+    {% endif %}
+    {% for setup_flag in netbird_setup_flags %}
+      {{ setup_flag }} \
+    {% endfor %}
+      --wireguard-port={{ netbird_port }} \
+      --hostname={{ inventory_hostname }}
