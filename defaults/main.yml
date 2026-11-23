@@ -26,3 +26,14 @@ netbird_forwarding_in_interface: 'wt0'
 netbird_forwarding_out_interface: 'wg0'
 netbird_forwarding_networks: []
 netbird_forwarding_rule_path: '/etc/nft.conf.d/nat/postrouting/netbird.nft'
+
+# Consul service definition settings
+netbird_consul_service_name: 'netbird'
+netbird_consul_metrics_service_name: '{{ netbird_consul_service_name }}-metrics'
+netbird_consul_service_file_name: '{{ netbird_service_name | replace("-", "_") }}'
+netbird_consul_check_disabled: false
+netbird_consul_check_interval: '60s'
+netbird_consul_check_timeout: '5s'
+netbird_consul_success_before_passing: 0
+netbird_consul_failures_before_warning: 1
+netbird_consul_failures_before_critical: 2

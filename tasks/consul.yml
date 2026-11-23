@@ -1,0 +1,29 @@
+---
+- name: Create Consul service definition
+  include_role:
+    name: infra-role-consul-service
+  vars:
+    consul_config_name:                      '{{ netbird_consul_service_file_name }}'
+    consul_default_check_disabled:           '{{ netbird_consul_check_disabled }}'
+    consul_default_check_interval:           '{{ netbird_consul_check_interval }}'
+    consul_default_check_timeout:            '{{ netbird_consul_check_timeout }}'
+    consul_default_success_before_passing:   '{{ netbird_consul_success_before_passing }}'
+    consul_default_failures_before_warning:  '{{ netbird_consul_failures_before_warning }}'
+    consul_default_failures_before_critical: '{{ netbird_consul_failures_before_critical }}'
+    consul_services:
+      - id:   '{{ netbird_service_name }}'
+        name: '{{ netbird_consul_service_name }}'
+        tags: ['{{ env }}.{{ stage }}', 'netbird', 'vpn']
+        checks:
+          - id:   '{{ netbird_service_name }}-service-health'
+            type: 'script'
+            script: >-
+              /bin/systemctl is-active {{ netbird_service_name }}
+
+      - id:   '{{ netbird_service_name }}'
+        name: '{{ netbird_consul_metrics_service_name }}'
+        tags: ['{{ env }}.{{ stage }}', 'netbird', 'vpn']
+        checks:
+          - id:   '{{ netbird_consul_metrics_service_name }}-health'
+            type: 'http'
+            http: 'http://localhost:{{ netbird_metrics_port }}/metrics'
