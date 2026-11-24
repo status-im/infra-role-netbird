@@ -3,7 +3,7 @@
 #netbird_setup_key: ~
 
 netbird_service_name: 'netbird'
-netbird_port: 51820
+netbird_port: 51821
 netbird_setup_flags:
   - '--no-browser'
 
