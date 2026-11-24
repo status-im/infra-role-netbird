@@ -13,7 +13,7 @@
 
 - name: Enroll NetBird routing peer
   when: netbird_status_raw.failed
-  no_log: true
+  #no_log: true
   environment:
     NB_SETUP_KEY: '{{ netbird_setup_key | mandatory }}'
   command: |
@@ -26,4 +26,4 @@
       {{ setup_flag }} \
     {% endfor %}
       --wireguard-port={{ netbird_port }} \
-      --hostname={{ inventory_hostname }}
+      --hostname={{ inventory_hostname | replace(".", "-") }}

@@ -9,6 +9,8 @@
 
 - import_tasks: gateway.yml
 
+- import_tasks: resolved.yml
+
 - import_tasks: service.yml
 
 - import_tasks: proxy.yml

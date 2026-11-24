@@ -1,0 +1,26 @@
+---
+- name: Create systemd-resolved drop-in directory
+  ansible.builtin.file:
+    path:  '/etc/systemd/resolved.conf.d'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode:  '0o755'
+
+- name: Configure additional DNS listener
+  register: systemd_resolved_listen_conf
+  ansible.builtin.copy:
+    dest:  '/etc/systemd/resolved.conf.d/listen.conf'
+    owner: 'root'
+    group: 'root'
+    mode:  '0o644'
+    content: |
+      # Ansible: Deployed for NetBird resolving of wg.internal.
+      [Resolve]
+      DNSStubListenerExtra={{ netbird_systemd_resolved_host }}:{{ netbird_systemd_resolved_port }}
+
+- name: Restart systemd-resolved
+  when: systemd_resolved_listen_conf.changed
+  ansible.builtin.systemd_service:
+    name: 'systemd-resolved'
+    state: 'restarted'

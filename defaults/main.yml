@@ -20,6 +20,11 @@ netbird_apt_repo_key_sha256: '6bd434c07e7c3a71211de79ca287e93b45deadedc4b74f1a2e
 netbird_apt_repo_keyring: '/usr/share/keyrings/netbird-archive-keyring.asc'
 netbird_apt_repo_filename: 'netbird'
 
+# Local DNS Server
+netbird_systemd_resolved_host: '0.0.0.0'
+netbird_systemd_resolved_port: 153
+
+# Traffic Forwarding
 netbird_forwarding_enabled: false
 #netbird_forwarding_source_network: ~
 netbird_forwarding_in_interface: 'wt0'
